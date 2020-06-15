@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlazorSvgHelper.Classes.Attributes;
 
 namespace BlazorSvgHelper.Classes.SubClasses
 {
@@ -13,12 +14,19 @@ namespace BlazorSvgHelper.Classes.SubClasses
         public string font_family { get; set; } = null;
         public string text_anchor { get; set; } = null;
 
+        public string mask { get; set; } = null;
+
         public string fill { get; set; } = null;
         public string transform { get; set; } = null;
         public ICollection<object> Children { get; set; } = new List<object>();
 
         public BoolOptionsEnum onclick { get; set; } = BoolOptionsEnum.none;
         public BoolOptionsEnum StopPropagation { get; set; } = BoolOptionsEnum.none;
+
+        [PropertyName("class")]
+        public string @class { get; set; } = null;
+
+        public string style { get; set; }
 
     }
 }

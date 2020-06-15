@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlazorSvgHelper.Classes.Attributes;
 
 namespace BlazorSvgHelper.Classes.SubClasses
 {
@@ -21,6 +22,11 @@ namespace BlazorSvgHelper.Classes.SubClasses
         
         public string viewBox { get; set; } = null;
         public string preserveAspectRatio { get; set; } = null;
+
+        public string version { get; set; } = null;
+
+        [PropertyName("class")]
+        public string @class { get; set; } = null;
 
         public BoolOptionsEnum onclick { get; set; } = BoolOptionsEnum.none;
         public BoolOptionsEnum StopPropagation { get; set; } = BoolOptionsEnum.none;

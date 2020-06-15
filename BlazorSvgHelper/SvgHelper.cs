@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using BlazorSvgHelper.Classes.Attributes;
 
 namespace BlazorSvgHelper
 {
@@ -36,9 +37,8 @@ namespace BlazorSvgHelper
 
             if (_Item.GetType().GetProperties().Any(x => x.Name == "CaptureRef"))
             {
-
                 PropertyInfo pi_captureref = _Item.GetType().GetProperty("CaptureRef");
-                if ((bool)pi_captureref.GetValue(_Item, null))
+                if ((bool) pi_captureref.GetValue(_Item, null))
                 {
                     if (_Item.GetType().GetProperties().Any(x => x.Name == "id"))
                     {
@@ -47,10 +47,8 @@ namespace BlazorSvgHelper
 
                         CaptureRef = _value_id != null && !string.IsNullOrEmpty(_value_id.ToString());
                     }
-
                 }
             }
-
 
 
             object _value;
@@ -62,27 +60,25 @@ namespace BlazorSvgHelper
             builder.OpenElement(k++, _Item.GetType().Name);
 
 
-
-            foreach (PropertyInfo pi in _Item.GetType().GetProperties().Where(x => !x.PropertyType.Name.Contains("ICollection") && !x.PropertyType.Name.Contains("CaptureRef")))
+            foreach (PropertyInfo pi in _Item.GetType().GetProperties()
+                .Where(x => !x.PropertyType.Name.Contains("ICollection") && !x.PropertyType.Name.Contains("CaptureRef")))
             {
                 //list can't filter captureref??????
                 if (pi.Name != "CaptureRef")
                 {
-
                     IsAllowed = true;
 
                     _value = pi.GetValue(_Item, null);
 
                     if (pi.PropertyType == typeof(double))
                     {
-                        if (double.IsNaN((double)_value))
+                        if (double.IsNaN((double) _value))
                         {
                             IsAllowed = false;
-
                         }
                         else
                         {
-                            _value = Math.Round((double)_value, 2);
+                            _value = Math.Round((double) _value, 2);
                         }
                     }
 
@@ -96,25 +92,34 @@ namespace BlazorSvgHelper
                     {
                         if (pi.Name == "stroke_linecap")
                         {
-                            IsAllowed = (strokeLinecap)_value != strokeLinecap.none;
+                            IsAllowed = (strokeLinecap) _value != strokeLinecap.none;
                         }
                     }
 
 
                     if (IsAllowed)
                     {
-                        _attrName = pi.Name;
+                        var propertyName = pi.GetCustomAttribute<PropertyNameAttribute>();
+                        if (propertyName?.Name != null)
+                        {
+                            _attrName = propertyName.Name;
+                        }
+                        else
+                        {
+                            _attrName = pi.Name;
+                        }
+
 
                         if (_attrName.Equals("onclick"))
                         {
-                            if ((BoolOptionsEnum)_value == BoolOptionsEnum.Yes)
+                            if ((BoolOptionsEnum) _value == BoolOptionsEnum.Yes)
                             {
                                 builder.AddAttribute(1, _attrName, EventCallback.Factory.Create(this, e => Cmd_Clicked(e, Par_ID)));
                             }
                         }
-                        else if(_attrName.ToLower().Equals("stoppropagation"))
+                        else if (_attrName.ToLower().Equals("stoppropagation"))
                         {
-                            if ((BoolOptionsEnum)_value == BoolOptionsEnum.Yes)
+                            if ((BoolOptionsEnum) _value == BoolOptionsEnum.Yes)
                             {
                                 builder.AddEventStopPropagationAttribute(2, "onclick", true);
                             }
@@ -124,7 +129,6 @@ namespace BlazorSvgHelper
                             if (_attrName.Equals("content"))
                             {
                                 builder.AddContent(3, _value.ToString());
-
                             }
                             else
                             {
@@ -134,9 +138,7 @@ namespace BlazorSvgHelper
                                 }
 
                                 builder.AddAttribute(4, _attrName, _value.ToString());
-
                             }
-
                         }
                     }
                 }
@@ -151,20 +153,15 @@ namespace BlazorSvgHelper
 
                 foreach (object item in children)
                 {
-                    Cmd_Render(item, k++, builder, Par_ID);;
+                    Cmd_Render(item, k++, builder, Par_ID);
+                    ;
                 }
             }
 
 
-
             if (CaptureRef)
             {
-                builder.AddElementReferenceCapture(5, (elementReference) =>
-                {
-
-                    Elementreferences_Dictionary.Add(_value_id, elementReference);
-
-                });
+                builder.AddElementReferenceCapture(5, (elementReference) => { Elementreferences_Dictionary.Add(_value_id, elementReference); });
             }
 
             builder.CloseElement();

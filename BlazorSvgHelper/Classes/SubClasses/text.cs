@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlazorSvgHelper.Classes.Attributes;
 
 namespace BlazorSvgHelper.Classes.SubClasses
 {
@@ -26,6 +27,9 @@ namespace BlazorSvgHelper.Classes.SubClasses
         public string transform { get; set; } = null;
         public ICollection<object> Children { get; set; } = new List<object>();
 
+        [PropertyName("class")]
+        public string @class { get; set; }
+        public string style { get; set; } = null;
 
         //should be on last position because renderer addcontent should happend after attributes set - lupusa 7/26/2018
         public string content { get; set; } = null;
